@@ -23,7 +23,7 @@
 
 
 // http://learnjsdata.com/read_data.html
-d3.json("samples.json").then((sampleData) => {
+d3.json("/data/samples.json").then((sampleData) => {
   return sampleData
 });
 
