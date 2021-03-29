@@ -24,6 +24,7 @@
 
 // http://learnjsdata.com/read_data.html
 d3.json("/data/samples.json").then((sampleData) => {
+  console.log(sampleData);
   return sampleData
 });
 
