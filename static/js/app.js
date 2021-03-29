@@ -22,10 +22,10 @@
 
 
 
-// http://learnjsdata.com/read_data.html
 d3.json("/data/samples.json").then((sampleData) => {
-  console.log(sampleData);
-  return sampleData
+  var data = sampleData.metadata
+  var names = data.names
+  console.log(names)
 });
 
 
