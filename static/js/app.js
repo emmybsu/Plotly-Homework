@@ -18,16 +18,52 @@
   
 
 
-
-
-
-
 // http://learnjsdata.com/read_data.html
-d3.json("/data/samples.json").then((sampleData) => {
-  var data = sampleData.metadata
-  var names = data.names
-  console.log(names)
+d3.json("data/samples.json").then((sampleData) => {
+  var data0 = sampleData.samples[0].sample_values
+  var data1 = sampleData.samples[0].otu_ids
+  var data2 = sampleData.samples[0].otu_labels
+
+  values = data0.slice(0,10)
+  labels = data1.slice(0,10)
+  hover = data2.slice(0,10)
+  //var names = data.names
+  console.log(values)
+  console.log(labels)
+  console.log(hover)
+    
 });
+
+//create trace variable for the plot
+
+var trace = {
+  x : values,
+  y: labels,
+  text: hover,
+  type: "bar",
+  orientation: "h"
+};
+// create the data variable
+
+var data = [trace];
+
+// create the layout variable
+var layout = {
+  title: "Top 10 OTU",
+  yaxis: {
+    tickmode: "linear"
+  },
+  margin: {
+    l: 100,
+    r: 100,
+    t: 100,
+    b: 30
+  }
+};
+
+Plotly.newPlot('bar', data, layout);
+
+
 
 
 
