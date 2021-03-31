@@ -1,21 +1,5 @@
-// //added code from W15,D3,A05,Solved-plots.js
+// //added code from W15,D2,A08,Solved-plots.js
 // //build data to create plotly charts
-
-// function buildTable(dates, openPrices, highPrices, lowPrices, closingPrices, volume) {
-//     var table = d3.select("#summary-table");
-//     var tbody = table.select("tbody");
-//     var trow;
-//     for (var i = 0; i < 12; i++) {
-//       trow = tbody.append("tr");
-//       trow.append("td").text(dates[i]);
-//       trow.append("td").text(openPrices[i]);
-//       trow.append("td").text(highPrices[i]);
-//       trow.append("td").text(lowPrices[i]);
-//       trow.append("td").text(closingPrices[i]);
-//       trow.append("td").text(volume[i]);
-//     }
-//   }
-  
 
 
 // http://learnjsdata.com/read_data.html
@@ -32,7 +16,6 @@ d3.json("data/samples.json").then((sampleData) => {
   console.log(labels)
   console.log(hover)
     
-});
 
 //create trace variable for the plot
 
@@ -61,15 +44,32 @@ var layout = {
   }
 };
 
+
 Plotly.newPlot('bar', data, layout);
 
+});
 
 
 
 
 
 
-
+// function buildTable(dates, openPrices, highPrices, lowPrices, closingPrices, volume) {
+//     var table = d3.select("#summary-table");
+//     var tbody = table.select("tbody");
+//     var trow;
+//     for (var i = 0; i < 12; i++) {
+//       trow = tbody.append("tr");
+//       trow.append("td").text(dates[i]);
+//       trow.append("td").text(openPrices[i]);
+//       trow.append("td").text(highPrices[i]);
+//       trow.append("td").text(lowPrices[i]);
+//       trow.append("td").text(closingPrices[i]);
+//       trow.append("td").text(volume[i]);
+//     }
+//   }
+  
+// create images function
 
 
 
