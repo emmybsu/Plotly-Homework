@@ -1,154 +1,118 @@
-// //added code from W15,D2,A08,Solved-plots.js
+//identify tag in index.html to add name of ID
+var htmlTag = d3.select('#selDataset');
+
 // //build data to create plotly charts
 
-
-// http://learnjsdata.com/read_data.html
 d3.json("data/samples.json").then((sampleData) => {
-  var data0 = sampleData.samples[0].sample_values
-  var data1 = sampleData.samples[0].otu_ids
-  var data2 = sampleData.samples[0].otu_labels
+  var subIDs = sampleData.names;
+  //display all subject IDs
 
-  values = data0.slice(0,10)
-  labels = data1.slice(0,10)
-  hover = data2.slice(0,10)
-  //var names = data.names
-  console.log(values)
-  console.log(labels)
-  console.log(hover)
-    
+  //display individual ids
+  subIDs.forEach((id) => {
+    htmlTag.append('option')
+    .property('value', id)
+    .text(id);
+  });
 
-//create trace variable for the plot
+  // web page displays first ID in Test Subject Drop down 
+  optionChanged(subIDs[0]);
+});
 
-var trace = {
-  x : values,
-  y: labels,
+//allows user to select IDs and dashboard changes based on ID change from menu
+// <select id="selDataset" onchange="optionChanged(this.value)"></select>
+function optionChanged (selIDs){
+   d3.json('data/samples.json').then((sampleData) => {
+    // create samples associated to ID 
+
+    var samples = sampleData.samples;
+    var results = samples.filter(individual => individual.id == selIDs);
+   
+    //first individual result
+    var result = results[0];
+     
+    //create bar chart
+    // identify 'sample_values' as values for the chart
+    // identify 'otu_ids' as labels for the chart
+    // identify 'otu_labels' as hovertext for the chart
+ 
+    var values = results[0].sample_values
+    var labels = results[0].otu_ids
+    var hover = results[0].otu_labels
+
+    var y_axis = labels.slice(0,10).map(labels => `OTU ${labels}`).reverse();
+
+  //create trace variable for the bar chart
+
+  var bar_trace = {
+    y: y_axis,
+    x: values.slice(0,10).reverse(),
+    text: hover.slice(0,10).reverse(),
+    type: "bar",
+    orientation: "h"
+  };
+  // create the data variable
+  var data = [bar_trace];
+  // create the layout variable
+  var bar_layout = {
+    title: "Top 10 OTUs",
+    yaxis: {
+      tickmode: "linear"
+    },
+    margin: {
+      l: 100,
+      r: 100,
+      t: 100,
+      b: 30
+    }
+  };
+  Plotly.newPlot('bar', data, bar_layout);
+
+  // create bubble chart
+  //* Use `otu_ids` for the x values. = labels
+//  * Use `sample_values` for the y values. = values
+  //* Use `sample_values` for the marker size. = values
+  //* Use `otu_ids` for the marker colors. = labels
+  //* Use `otu_labels` for the text values. = hover
+  //results = dict of ID
+  //result = list of one key value with  ID array
+  
+
+
+// create individual's demographic information per ID
+
+var demographics = sampleData.metadata;
+
+var demoHTML = d3.select('#sample-metadata');
+
+var detailsID = demographics.filter(person => person.id == selIDs);
+
+// individual's demographics
+var result = detailsID[0];
+demoHTML.html('');
+Object.entries(result).forEach(([key,value]) => {
+  demoHTML.append('h5').text(`${key}: ${value}`);
+
+})
+
+var bubble_trace = {
+  x: labels,
+  y: values,
   text: hover,
-  type: "bar",
-  orientation: "h"
-};
-// create the data variable
-
-var data = [trace];
-
-// create the layout variable
-var layout = {
-  title: "Top 10 OTU",
-  yaxis: {
-    tickmode: "linear"
-  },
-  margin: {
-    l: 100,
-    r: 100,
-    t: 100,
-    b: 30
+  mode: "markers",
+  marker: {
+    size: values,
+    color: labels,
+    colorscale: "Earth"
   }
 };
 
+var data = [bubble_trace];
 
-Plotly.newPlot('bar', data, layout);
-
+var bubble_layout = {
+  hovermode:  "closest", 
+  xaxis: {title: "Display of Each Microbe in the Navel (Operational Taxonomic Unit (OTU))"},
+  margin: {t:30}
+};
+Plotly.newPlot("bubble", data, bubble_layout);
 });
-
-
-
-
-
-
-// function buildTable(dates, openPrices, highPrices, lowPrices, closingPrices, volume) {
-//     var table = d3.select("#summary-table");
-//     var tbody = table.select("tbody");
-//     var trow;
-//     for (var i = 0; i < 12; i++) {
-//       trow = tbody.append("tr");
-//       trow.append("td").text(dates[i]);
-//       trow.append("td").text(openPrices[i]);
-//       trow.append("td").text(highPrices[i]);
-//       trow.append("td").text(lowPrices[i]);
-//       trow.append("td").text(closingPrices[i]);
-//       trow.append("td").text(volume[i]);
-//     }
-//   }
-  
-// create images function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   function buildPlot() {
-//     var url = `https://www.quandl.com/api/v3/datasets/WIKI/AMZN.json?start_date=2017-01-01&end_date=2018-11-22&api_key=${apiKey}`;
-
-//     d3.json(url).then(function(data) {
-
-//       // Grab values from the response json object to build the plots
-//       var name = data.dataset.name;
-//       var stock = data.dataset.dataset_code;
-//       var startDate = data.dataset.start_date;
-//       var endDate = data.dataset.end_date;
-//       var dates = unpack(data.dataset.data, 0);
-//       var openingPrices = unpack(data.dataset.data, 1);
-//       var highPrices = unpack(data.dataset.data, 2);
-//       var lowPrices = unpack(data.dataset.data, 3);
-//       var closingPrices = unpack(data.dataset.data, 4);
-
-//       getMonthlyData();
-
-//       var trace1 = {
-//         type: "scatter",
-//         mode: "lines",
-//         name: name,
-//         x: dates,
-//         y: closingPrices,
-//         line: {
-//           color: "#17BECF"
-//         }
-//       };
-
-//       // Candlestick Trace
-//       var trace2 = {
-//         type: "candlestick",
-//         x: dates,
-//         high: highPrices,
-//         low: lowPrices,
-//         open: openingPrices,
-//         close: closingPrices
-//       };
-
-//       var data = [trace1, trace2];
-
-//       var layout = {
-//         title: `${stock} closing prices`,
-//         xaxis: {
-//           range: [startDate, endDate],
-//           type: "date"
-//         },
-//         yaxis: {
-//           autorange: true,
-//           type: "linear"
-//         },
-//         showlegend: false
-//       };
-
-//       Plotly.newPlot("plot", data, layout);
-
-//     });
-//   }
-
-//   buildPlot();
+};
